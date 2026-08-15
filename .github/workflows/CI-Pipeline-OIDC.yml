@@ -26,7 +26,7 @@ jobs:
   # ==========================================================
 
   terraform_plan:
-    name: Terraform Plan (Before Merge)
+    name: Terraform Plan
 
     # Run only when Pull Request is created/updated
     if: github.event_name == 'pull_request'
@@ -71,7 +71,7 @@ jobs:
   # ==========================================================
 
   terraform_apply:
-    name: Terraform Apply (After Merge)
+    name: Terraform Apply
 
     # Run only when code is pushed to main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
