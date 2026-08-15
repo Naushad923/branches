@@ -36,6 +36,7 @@ jobs:
 
   Terraform_Apply:
     name: Terrafrom Apply
+    needs: Terraform_Plan
     if: github.ref == 'refs/heads/main'
     runs-on: self-hosted
     steps:
