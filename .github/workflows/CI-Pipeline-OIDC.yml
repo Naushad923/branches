@@ -32,7 +32,16 @@ jobs:
       - name: init
         run: terraform init
       - name: pla
-        run: terraform plan    
+        run: terraform plan 
+      - name: Get GitHub Organization Details
+        run: |
+          echo "Repository Owner = ${{ github.repository_owner }}"
+          echo "Repository Owner ID = ${{ github.repository_owner_id }}"
+          echo "Repository ID = ${{ github.repository_id }}"           
+
+
+
+
 
   Terraform_Apply:
     name: Terrafrom Apply
