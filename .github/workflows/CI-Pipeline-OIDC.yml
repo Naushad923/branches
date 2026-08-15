@@ -1,74 +1,56 @@
-name: Terrafom Plan
+name: Terraform CI/CD
+
 on:
   push:
     branches:
-    - main
+      - main
+      - feature
+
   workflow_dispatch:
 
 permissions:
   id-token: write
-  contents: read    
+  contents: read
 
 jobs:
-  Terrafom_Plan:
+
+  terraform:
+    name: Terraform
     runs-on: self-hosted
+
     steps:
-      - uses: actions/checkout@v4
 
-      # - uses: hashicorp/setup-terraform@v4
-      #   with:
-      #    terraform_version: "1.14.6"  
-    
-      - uses: azure/login@v3
-        name: Azure login
+      # Checkout source code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        with: 
+      # Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+
+      # Login to Azure using OIDC
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  
-          
-      - name: init
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Initialize Terraform
+      - name: Terraform Init
         run: terraform init
-      - name: pla
-        run: terraform plan     
- 
-        
 
-name: Terrafom apply
-on:
-  push:
-    branches:
-    - feature
-  workflow_dispatch:
+      # Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
 
-permissions:
-  id-token: write
-  contents: read    
+      # Create Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan
 
-jobs:
-  Terrafom_Plan:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
-
-      # - uses: hashicorp/setup-terraform@v4
-      #   with:
-      #    terraform_version: "1.14.6"  
-    
-      - uses: azure/login@v3
-        name: Azure login
-
-        with: 
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  
-          
-      - name: init
-        run: terraform init
-      - name: pla
-        run: terraform plan     
-      - name: apply
-        run: terraform apply -auto-approve      
-
-
-
+      # Apply only when workflow runs from feature branch
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/feature'
+        run: terraform apply -auto-approve
