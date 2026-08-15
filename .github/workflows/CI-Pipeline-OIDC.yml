@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   Terraform_Plan:
+    name: Terrafrom Plan
     if: github.ref == 'refs/heads/feature'
     runs-on: self-hosted
     steps:
@@ -34,6 +35,7 @@ jobs:
         run: terraform plan    
 
   Terraform_Apply:
+    name: Terrafrom Apply
     if: github.ref == 'refs/heads/main'
     runs-on: self-hosted
     steps:
