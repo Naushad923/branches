@@ -1,115 +1,33 @@
-name: Terraform CI/CD
-
+name: OIDC
 on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-
   push:
     branches:
-      - main
-
+    - feature
   workflow_dispatch:
 
 permissions:
   id-token: write
-  contents: read
+  contents: read    
 
 jobs:
-
-  # ==========================================================
-  # 1. TERRAFORM PLAN - BEFORE MERGE
-  # ==========================================================
-
-  terraform_plan:
-    name: Terraform Plan
-
-    # Run only when Pull Request is created/updated
-    if: github.event_name == 'pull_request'
-
+  build:
     runs-on: self-hosted
-
     steps:
+      - uses: actions/checkout@v4
 
-      # Checkout code from PR
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      # - uses: hashicorp/setup-terraform@v4
+      #   with:
+      #    terraform_version: "1.14.6"  
+    
+      - uses: azure/login@v3
+        name: Azure login
 
-      # Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.14.6"
-
-      # Azure Login using OIDC
-      - name: Azure Login
-        uses: azure/login@v3
-        with:
+        with: 
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      # Terraform Init
-      - name: Terraform Init
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  
+          
+      - name: init
         run: terraform init
-
-      # Terraform Validate
-      - name: Terraform Validate
-        run: terraform validate
-
-      # Terraform Plan
-      - name: Terraform Plan
-        run: terraform plan
-
-
-  # ==========================================================
-  # 2. TERRAFORM APPLY - AFTER MERGE
-  # ==========================================================
-
-  terraform_apply:
-    name: Terraform Apply
-
-    # Run only when code is pushed to main
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    runs-on: self-hosted
-
-    steps:
-
-      # Checkout merged code
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      # Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.14.6"
-
-      # Azure Login using OIDC
-      - name: Azure Login
-        uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      # Terraform Init
-      - name: Terraform Init
-        run: terraform init
-
-      # Terraform Validate
-      - name: Terraform Validate
-        run: terraform validate
-
-      # Terraform Plan
-      - name: Terraform Plan
-        run: terraform plan
-
-      # Terraform Apply
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: pla
+        run: terraform plan    
