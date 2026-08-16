@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - feature
+    - main
   workflow_dispatch:
 
 permissions:
