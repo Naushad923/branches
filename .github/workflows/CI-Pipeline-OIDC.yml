@@ -36,6 +36,12 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
+      - name: Get GitHub Organization Details
+        run: |
+          echo "Repository Owner = ${{ github.repository_owner }}"
+          echo "Repository Owner ID = ${{ github.repository_owner_id }}"
+          echo "Repository ID = ${{ github.repository_id }}"        
+
 
 
   Terraform_Apply:
@@ -63,3 +69,9 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        
+      - name: Get GitHub Organization Details
+        run: |
+          echo "Repository Owner = ${{ github.repository_owner }}"
+          echo "Repository Owner ID = ${{ github.repository_owner_id }}"
+          echo "Repository ID = ${{ github.repository_id }}"        
