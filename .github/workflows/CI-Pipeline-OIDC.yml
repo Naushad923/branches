@@ -33,6 +33,11 @@ jobs:
         run: terraform init
       - name: pla
         run: terraform plan 
+      - name: validate
+        run: terraform validate      
+
+
+
       - name: Get GitHub Organization Details
         run: |
           echo "Repository Owner = ${{ github.repository_owner }}"
